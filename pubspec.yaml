@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  modal_bottom_sheet: ^3.0.0-pre
 
   provider: ^6.1.1
   flutter_bloc: ^8.1.3
