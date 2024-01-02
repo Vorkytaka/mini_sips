@@ -23,9 +23,11 @@ class PlatformProvider extends InheritedWidget {
 
 class PlatformProviderHolder extends StatefulWidget {
   final Widget child;
+  final TargetPlatform? platform;
 
   const PlatformProviderHolder({
     required this.child,
+    this.platform,
     super.key,
   });
 
@@ -41,6 +43,12 @@ class PlatformProviderHolder extends StatefulWidget {
 
 class _PlatformProviderHolderState extends State<PlatformProviderHolder> {
   TargetPlatform? _selectedPlatform;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPlatform = widget.platform;
+  }
 
   void setPlatform(TargetPlatform platform) => setState(() {
         _selectedPlatform = platform;

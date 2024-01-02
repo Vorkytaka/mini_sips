@@ -7,6 +7,7 @@ import 'platform_common.dart';
 Future<void> showPlatformBottomSheet({
   required BuildContext context,
   required WidgetBuilder builder,
+  bool expand = false,
 }) {
   final platform = PlatformProvider.of(context);
 
@@ -14,11 +15,13 @@ Future<void> showPlatformBottomSheet({
     return CupertinoScaffold.showCupertinoModalBottomSheet(
       context: context,
       builder: builder,
+      expand: expand,
     );
   } else {
     return showMaterialModalBottomSheet(
       context: context,
       builder: builder,
+      expand: expand,
     );
   }
 }
