@@ -14,14 +14,28 @@ Future<void> showDrinkedDialog({
       },
     );
 
-class DrinkedDialog extends StatelessWidget {
+class DrinkedDialog extends StatefulWidget {
   const DrinkedDialog({super.key});
 
   @override
+  State<DrinkedDialog> createState() => _DrinkedDialogState();
+}
+
+class _DrinkedDialogState extends State<DrinkedDialog> {
+  bool _showDetails = false;
+  bool _showAlcoPicker = false;
+  bool _showDateTimePicker = false;
+
+  @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.viewPaddingOf(context);
+
     return Material(
       type: MaterialType.transparency,
       child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CupertinoNavigationBar(
             leading: CupertinoButton(
@@ -30,19 +44,16 @@ class DrinkedDialog extends StatelessWidget {
               child: Text('Отменить'),
             ),
             middle: Text('Алкоголь'),
-            trailing: CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {},
-              child: Text('Добавить'),
-            ),
           ),
           CupertinoListSection.insetGrouped(
             additionalDividerMargin: 0,
             backgroundColor: Colors.transparent,
             children: [
-              CupertinoListTile(
+              CupertinoListTileWithBottom(
                 title: Text('Что пьём?'),
-                onTap: () => _selectAlcohol(context: context),
+                onTap: () => setState(() {
+                  _showAlcoPicker = !_showAlcoPicker;
+                }),
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -54,6 +65,48 @@ class DrinkedDialog extends StatelessWidget {
                   ),
                   child: Text('-'),
                 ),
+                bottom: _showAlcoPicker
+                    ? SizedBox(
+                        height: 216,
+                        child: CupertinoPicker(
+                          itemExtent: 32,
+                          onSelectedItemChanged: (_) {},
+                          children: [
+                            Center(child: Text('Пиво')),
+                            Center(child: Text('Водка')),
+                            Center(child: Text('Виски')),
+                          ],
+                        ),
+                      )
+                    : null,
+              ),
+              CupertinoListTileWithBottom(
+                title: Text('Когда'),
+                trailing: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  child: Text('Сейчас'),
+                ),
+                onTap: () => setState(() {
+                  _showDateTimePicker = !_showDateTimePicker;
+                }),
+                bottom: _showDateTimePicker
+                    ? SizedBox(
+                        height: 216,
+                        child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.dateAndTime,
+                          maximumDate:
+                              DateTime.now().add(const Duration(minutes: 1)),
+                          onDateTimeChanged: (_) {},
+                        ),
+                      )
+                    : null,
               ),
             ],
           ),
@@ -62,56 +115,87 @@ class DrinkedDialog extends StatelessWidget {
             backgroundColor: Colors.transparent,
             children: [
               CupertinoListTile(
-                title: Text('Дата'),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Text('10.20.2232'),
+                onTap: () => setState(() {
+                  _showDetails = !_showDetails;
+                }),
+                title: Text('Подробнее'),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
                 ),
-              ),
-              CupertinoListTile(
-                title: Text('Время'),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Text('18:24'),
-                ),
-              ),
+              )
             ],
           ),
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: kThemeAnimationDuration,
+              child: _showDetails
+                  ? CupertinoListSection.insetGrouped(
+                      additionalDividerMargin: 0,
+                      backgroundColor: Colors.transparent,
+                      children: [
+                        CupertinoListTile(
+                          title: Text('Подробнее'),
+                        )
+                      ],
+                    )
+                  : const SizedBox(),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 10.0),
+            child: CupertinoButton.filled(
+              child: Text('Добавить'),
+              onPressed: () {},
+            ),
+          ),
+          SizedBox(height: mediaQuery.bottom),
         ],
       ),
     );
   }
 }
 
-Future<void> _selectAlcohol({
-  required BuildContext context,
-}) =>
-    showPlatformBottomSheet(
-      context: context,
-      builder: (context) => SizedBox(
-        height: 250,
-        child: CupertinoPicker(
-          itemExtent: 32,
-          onSelectedItemChanged: (_) {},
-          children: [
-            Center(child: Text('Пиво')),
-            Center(child: Text('Водка')),
-            Center(child: Text('Виски')),
-          ],
+class CupertinoListTileWithBottom extends StatelessWidget {
+  final Widget title;
+  final VoidCallback? onTap;
+  final Widget? trailing;
+  final Widget? bottom;
+
+  const CupertinoListTileWithBottom({
+    super.key,
+    required this.title,
+    this.onTap,
+    this.trailing,
+    this.bottom,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CupertinoListTile(
+          title: title,
+          onTap: onTap,
+          trailing: trailing,
         ),
-      ),
+        AnimatedSwitcher(
+          duration: kThemeAnimationDuration,
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeOut,
+          transitionBuilder: (child, anim) => SizeTransition(
+            sizeFactor: anim,
+            axis: Axis.vertical,
+            axisAlignment: -1,
+            child: child,
+          ),
+          child: bottom ?? const SizedBox.shrink(key: ValueKey(-1994)),
+        ),
+      ],
     );
+  }
+}
