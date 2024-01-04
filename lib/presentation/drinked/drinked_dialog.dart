@@ -22,8 +22,10 @@ class DrinkedDialog extends StatefulWidget {
 }
 
 class _DrinkedDialogState extends State<DrinkedDialog> {
+  Alcohol _selectedAlcohol = alcohol.first;
+  DateTime? _selectedDateTime;
+
   bool _showDetails = false;
-  bool _showAlcoPicker = false;
   bool _showDateTimePicker = false;
 
   @override
@@ -49,64 +51,11 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
             additionalDividerMargin: 0,
             backgroundColor: Colors.transparent,
             children: [
-              CupertinoListTileWithBottom(
-                title: Text('Что пьём?'),
-                onTap: () => setState(() {
-                  _showAlcoPicker = !_showAlcoPicker;
+              SelectAlcoholField(
+                name: _selectedAlcohol.name,
+                onAlcoholChanged: (alco) => setState(() {
+                  _selectedAlcohol = alco;
                 }),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Text('-'),
-                ),
-                bottom: _showAlcoPicker
-                    ? SizedBox(
-                        height: 216,
-                        child: CupertinoPicker(
-                          itemExtent: 32,
-                          onSelectedItemChanged: (_) {},
-                          children: [
-                            Center(child: Text('Пиво')),
-                            Center(child: Text('Водка')),
-                            Center(child: Text('Виски')),
-                          ],
-                        ),
-                      )
-                    : null,
-              ),
-              CupertinoListTileWithBottom(
-                title: Text('Когда'),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  child: Text('Сейчас'),
-                ),
-                onTap: () => setState(() {
-                  _showDateTimePicker = !_showDateTimePicker;
-                }),
-                bottom: _showDateTimePicker
-                    ? SizedBox(
-                        height: 216,
-                        child: CupertinoDatePicker(
-                          mode: CupertinoDatePickerMode.dateAndTime,
-                          maximumDate:
-                              DateTime.now().add(const Duration(minutes: 1)),
-                          onDateTimeChanged: (_) {},
-                        ),
-                      )
-                    : null,
               ),
             ],
           ),
@@ -129,14 +78,31 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
           Expanded(
             child: AnimatedSwitcher(
               duration: kThemeAnimationDuration,
+              switchInCurve: Curves.easeIn,
+              switchOutCurve: Curves.easeOut,
+              transitionBuilder: (child, anim) => FadeTransition(
+                opacity: anim,
+                child: child,
+              ),
               child: _showDetails
                   ? CupertinoListSection.insetGrouped(
                       additionalDividerMargin: 0,
                       backgroundColor: Colors.transparent,
                       children: [
-                        CupertinoListTile(
-                          title: Text('Подробнее'),
-                        )
+                        DateTimeField(
+                          showPicker: _showDateTimePicker,
+                          value: _selectedDateTime?.toIso8601String(),
+                          onTap: () => setState(() {
+                            _showDateTimePicker = !_showDateTimePicker;
+                          }),
+                          onDateTimeChanged: (datetime) => setState(() {
+                            if (datetime.sameMinutes(_selectedDateTime)) {
+                              _selectedDateTime = null;
+                            } else {
+                              _selectedDateTime = datetime;
+                            }
+                          }),
+                        ),
                       ],
                     )
                   : const SizedBox(),
@@ -153,6 +119,125 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
           SizedBox(height: mediaQuery.bottom),
         ],
       ),
+    );
+  }
+}
+
+class SelectAlcoholField extends StatefulWidget {
+  final String name;
+  final ValueChanged<Alcohol> onAlcoholChanged;
+
+  const SelectAlcoholField({
+    super.key,
+    required this.name,
+    required this.onAlcoholChanged,
+  });
+
+  @override
+  State<SelectAlcoholField> createState() => _SelectAlcoholFieldState();
+}
+
+class _SelectAlcoholFieldState extends State<SelectAlcoholField> {
+  final _controller = PageController(
+    viewportFraction: 0.5,
+    initialPage: alcohol.length * 10000,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTileWithBottom(
+      title: Text('Что пьём?'),
+      bottom: SizedBox(
+        height: 160,
+        child: PageView.builder(
+          controller: _controller,
+          onPageChanged: (i) {
+            final selectedAlcohol = alcohol[i % alcohol.length];
+            widget.onAlcoholChanged(selectedAlcohol);
+          },
+          itemBuilder: (context, i) {
+            final index = i % alcohol.length;
+            final alco = alcohol[index];
+
+            return GestureDetector(
+              onTap: () {
+                if (_controller.page == i) {
+                  return;
+                }
+
+                _controller.animateToPage(
+                  i,
+                  duration: kThemeAnimationDuration,
+                  curve: Curves.easeIn,
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    alco.icon,
+                    size: 64,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(alco.name),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class DateTimeField extends StatelessWidget {
+  final VoidCallback onTap;
+  final bool showPicker;
+  final ValueChanged<DateTime> onDateTimeChanged;
+  final String? value;
+
+  const DateTimeField({
+    super.key,
+    required this.onTap,
+    required this.showPicker,
+    required this.onDateTimeChanged,
+    this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTileWithBottom(
+      title: Text('Когда'),
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 8,
+          vertical: 6,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+        ),
+        child: Text(value ?? 'Сейчас'),
+      ),
+      onTap: onTap,
+      bottom: showPicker
+          ? SizedBox(
+              height: 216,
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.dateAndTime,
+                maximumDate: DateTime.now().add(const Duration(minutes: 1)),
+                onDateTimeChanged: onDateTimeChanged,
+              ),
+            )
+          : null,
     );
   }
 }
@@ -197,5 +282,40 @@ class CupertinoListTileWithBottom extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+@immutable
+class Alcohol {
+  final String id;
+  final String name;
+  final IconData icon;
+
+  const Alcohol({
+    required this.id,
+    required this.name,
+    required this.icon,
+  });
+}
+
+const alcohol = [
+  Alcohol(id: 'no-matter', name: 'No matter', icon: Icons.water_drop_outlined),
+  Alcohol(id: 'beer', name: 'Beer', icon: Icons.stay_current_portrait),
+  Alcohol(id: 'wine', name: 'Wine', icon: Icons.schedule),
+  Alcohol(id: 'spirits', name: 'Spirits', icon: Icons.fastfood),
+  Alcohol(id: 'cocktails', name: 'Cocktails', icon: Icons.compass_calibration),
+];
+
+extension on DateTime {
+  bool sameMinutes(DateTime? datetime) {
+    if (datetime == null) {
+      return false;
+    }
+
+    return year == datetime.year &&
+        month == datetime.month &&
+        day == datetime.day &&
+        hour == datetime.hour &&
+        minute == datetime.minute;
   }
 }
