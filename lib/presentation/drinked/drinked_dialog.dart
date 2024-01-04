@@ -81,8 +81,10 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
               duration: kThemeAnimationDuration,
               switchInCurve: Curves.easeIn,
               switchOutCurve: Curves.easeOut,
-              transitionBuilder: (child, anim) => FadeTransition(
-                opacity: anim,
+              transitionBuilder: (child, anim) => SizeTransition(
+                sizeFactor: anim,
+                axis: Axis.vertical,
+                axisAlignment: -1.0,
                 child: child,
               ),
               child: _showDetails
@@ -104,6 +106,7 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
                             }
                           }),
                         ),
+                        const VolumeField(),
                         const AlcoholByVolumeField(),
                       ],
                     )
@@ -248,6 +251,33 @@ class DateTimeField extends StatelessWidget {
   }
 }
 
+class VolumeField extends StatelessWidget {
+  const VolumeField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTile(
+      title: Row(
+        children: [
+          Expanded(child: Text('Объем (мл.)')),
+          Expanded(
+            child: TextField(
+              textAlign: TextAlign.end,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              keyboardType: TextInputType.numberWithOptions(
+                signed: false,
+                decimal: false,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class AlcoholByVolumeField extends StatelessWidget {
   const AlcoholByVolumeField({super.key});
 
@@ -256,15 +286,16 @@ class AlcoholByVolumeField extends StatelessWidget {
     return CupertinoListTile(
       title: Row(
         children: [
-          Text('Крепость'),
-          Flexible(
-            child: Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: TextField(
-                expands: false,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                ),
+          Expanded(child: Text('Крепость (%)')),
+          Expanded(
+            child: TextField(
+              textAlign: TextAlign.end,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              keyboardType: TextInputType.numberWithOptions(
+                signed: false,
+                decimal: false,
               ),
             ),
           ),
