@@ -35,104 +35,104 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
 
     return Material(
       type: MaterialType.transparency,
-      child: CustomScrollView(
-        // mainAxisSize: MainAxisSize.max,
-        // mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
-        slivers: [
-          const SliverPersistentHeader(
-            delegate: CupertinoSliverAppBar(),
-            pinned: true,
-          ),
-          SliverToBoxAdapter(
-            child: CupertinoListSection.insetGrouped(
-              additionalDividerMargin: 0,
-              backgroundColor: Colors.transparent,
-              children: [
-                SelectAlcoholField(
-                  name: _selectedAlcohol.name,
-                  onAlcoholChanged: (alco) => setState(() {
-                    _selectedAlcohol = alco;
-                  }),
-                ),
-              ],
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: CustomScrollView(
+          slivers: [
+            const SliverPersistentHeader(
+              delegate: CupertinoSliverAppBar(),
+              pinned: true,
             ),
-          ),
-          SliverToBoxAdapter(
-            child: CupertinoListSection.insetGrouped(
-              additionalDividerMargin: 0,
-              backgroundColor: Colors.transparent,
-              children: [
-                CupertinoListTile(
-                  onTap: () => setState(() {
-                    _showDetails = !_showDetails;
-                  }),
-                  title: Text('Подробнее'),
-                  subtitle: Text('Опционально'),
-                  trailing: AnimatedRotation(
-                    turns: _showDetails ? 0.25 : 0,
-                    duration: kThemeAnimationDuration,
-                    curve: Curves.easeIn,
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 12,
+            SliverToBoxAdapter(
+              child: CupertinoListSection.insetGrouped(
+                additionalDividerMargin: 0,
+                backgroundColor: Colors.transparent,
+                children: [
+                  SelectAlcoholField(
+                    name: _selectedAlcohol.name,
+                    onAlcoholChanged: (alco) => setState(() {
+                      _selectedAlcohol = alco;
+                    }),
+                  ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: CupertinoListSection.insetGrouped(
+                additionalDividerMargin: 0,
+                backgroundColor: Colors.transparent,
+                children: [
+                  CupertinoListTile(
+                    onTap: () => setState(() {
+                      _showDetails = !_showDetails;
+                    }),
+                    title: Text('Подробнее'),
+                    subtitle: Text('Опционально'),
+                    trailing: AnimatedRotation(
+                      turns: _showDetails ? 0.25 : 0,
+                      duration: kThemeAnimationDuration,
+                      curve: Curves.easeIn,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 12,
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: AnimatedSwitcher(
+                duration: kThemeAnimationDuration,
+                switchInCurve: Curves.easeIn,
+                switchOutCurve: Curves.easeOut,
+                transitionBuilder: (child, anim) => SizeTransition(
+                  sizeFactor: anim,
+                  axis: Axis.vertical,
+                  axisAlignment: -1.0,
+                  child: child,
                 ),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: AnimatedSwitcher(
-              duration: kThemeAnimationDuration,
-              switchInCurve: Curves.easeIn,
-              switchOutCurve: Curves.easeOut,
-              transitionBuilder: (child, anim) => SizeTransition(
-                sizeFactor: anim,
-                axis: Axis.vertical,
-                axisAlignment: -1.0,
-                child: child,
-              ),
-              child: _showDetails
-                  ? CupertinoListSection.insetGrouped(
-                      additionalDividerMargin: 0,
-                      backgroundColor: Colors.transparent,
-                      children: [
-                        DateTimeField(
-                          showPicker: _showDateTimePicker,
-                          value: _selectedDateTime?.toIso8601String(),
-                          onTap: () => setState(() {
-                            _showDateTimePicker = !_showDateTimePicker;
-                          }),
-                          onDateTimeChanged: (datetime) => setState(() {
-                            if (datetime.sameMinutes(_selectedDateTime)) {
-                              _selectedDateTime = null;
-                            } else {
-                              _selectedDateTime = datetime;
-                            }
-                          }),
-                        ),
-                        const VolumeField(),
-                        const AlcoholByVolumeField(),
-                      ],
-                    )
-                  : const SizedBox(),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding:
-                  const EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 10.0),
-              child: CupertinoButton.filled(
-                child: Text('Добавить'),
-                onPressed: () {},
+                child: _showDetails
+                    ? CupertinoListSection.insetGrouped(
+                        additionalDividerMargin: 0,
+                        backgroundColor: Colors.transparent,
+                        children: [
+                          DateTimeField(
+                            showPicker: _showDateTimePicker,
+                            value: _selectedDateTime?.toIso8601String(),
+                            onTap: () => setState(() {
+                              _showDateTimePicker = !_showDateTimePicker;
+                            }),
+                            onDateTimeChanged: (datetime) => setState(() {
+                              if (datetime.sameMinutes(_selectedDateTime)) {
+                                _selectedDateTime = null;
+                              } else {
+                                _selectedDateTime = datetime;
+                              }
+                            }),
+                          ),
+                          const VolumeField(),
+                          const AlcoholByVolumeField(),
+                        ],
+                      )
+                    : const SizedBox(),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(height: padding.bottom + viewInsets.bottom),
-          ),
-        ],
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                    20.0, 20.0, 20.0, 10.0),
+                child: CupertinoButton.filled(
+                  child: Text('Добавить'),
+                  onPressed: () {},
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(height: padding.bottom + viewInsets.bottom),
+            ),
+          ],
+        ),
       ),
     );
   }
