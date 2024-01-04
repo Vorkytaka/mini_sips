@@ -68,11 +68,17 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
                     _showDetails = !_showDetails;
                   }),
                   title: Text('Подробнее'),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 12,
+                  subtitle: Text('Опционально'),
+                  trailing: AnimatedRotation(
+                    turns: _showDetails ? 0.25 : 0,
+                    duration: kThemeAnimationDuration,
+                    curve: Curves.easeIn,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 12,
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
