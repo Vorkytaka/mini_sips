@@ -100,15 +100,17 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
                           DateTimeField(
                             showPicker: _showDateTimePicker,
                             value: _selectedDateTime?.toIso8601String(),
-                            onTap: () => setState(() {
-                              _showDateTimePicker = !_showDateTimePicker;
-                            }),
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              setState(() {
+                                _showDateTimePicker = !_showDateTimePicker;
+                              });
+                            },
                             onDateTimeChanged: (datetime) => setState(() {
-                              if (datetime.sameMinutes(_selectedDateTime)) {
-                                _selectedDateTime = null;
-                              } else {
-                                _selectedDateTime = datetime;
-                              }
+                              _selectedDateTime = datetime;
+                            }),
+                            onCleanTap: () => setState(() {
+                              _selectedDateTime = null;
                             }),
                           ),
                           const VolumeField(),
@@ -218,12 +220,14 @@ class DateTimeField extends StatelessWidget {
   final bool showPicker;
   final ValueChanged<DateTime> onDateTimeChanged;
   final String? value;
+  final VoidCallback onCleanTap;
 
   const DateTimeField({
     super.key,
     required this.onTap,
     required this.showPicker,
     required this.onDateTimeChanged,
+    required this.onCleanTap,
     this.value,
   });
 
@@ -231,16 +235,44 @@ class DateTimeField extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoListTileWithBottom(
       title: Text('Когда'),
-      trailing: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 6,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-        child: Text(value ?? 'Сейчас'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 6,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+            ),
+            child: Text(value ?? 'Сейчас'),
+          ),
+          if (value != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: GestureDetector(
+                onTap: onCleanTap,
+                child: Icon(
+                  CupertinoIcons.clear,
+                  size: 18.0,
+                  color: Colors.grey.shade400,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
       onTap: onTap,
       bottom: showPicker
