@@ -13,7 +13,7 @@ Future<T?> showPlatformBottomSheet<T>({
 
   if (platform.isCupertino) {
     final cupertinoScaffold = CupertinoScaffold.of(context);
-    if(cupertinoScaffold != null) {
+    if (cupertinoScaffold != null) {
       return CupertinoScaffold.showCupertinoModalBottomSheet(
         context: context,
         builder: builder,
