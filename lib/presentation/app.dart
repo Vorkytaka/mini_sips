@@ -3,6 +3,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../dependencies.dart';
+import 'main/main_screen.dart';
 import 'platform/platform.dart';
 import 'welcome/welcome_screen.dart';
 
@@ -24,7 +25,7 @@ class App extends StatelessWidget {
         onGenerateRoute: (settings) {
           final Widget? page = switch (settings.name) {
             '/welcome' => const WelcomeScreen(),
-            '/main' => const Scaffold(),
+            '/main' => const MainScreen(),
             _ => null,
           };
 
@@ -40,6 +41,7 @@ class App extends StatelessWidget {
         },
         builder: (context, child) {
           return PlatformProviderHolder(
+            platform: TargetPlatform.iOS,
             child: child!,
           );
         },
