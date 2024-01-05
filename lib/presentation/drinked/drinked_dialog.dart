@@ -64,13 +64,13 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
                     onTap: () => setState(() {
                       _showDetails = !_showDetails;
                     }),
-                    title: Text('Подробнее'),
-                    subtitle: Text('Опционально'),
+                    title: const Text('Подробнее'),
+                    subtitle: const Text('Опционально'),
                     trailing: AnimatedRotation(
                       turns: _showDetails ? 0.25 : 0,
                       duration: kThemeAnimationDuration,
                       curve: Curves.easeIn,
-                      child: Icon(
+                      child: const Icon(
                         Icons.arrow_forward_ios,
                         size: 12,
                       ),
@@ -94,9 +94,9 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
                     ? CupertinoListSection.insetGrouped(
                         additionalDividerMargin: 0,
                         backgroundColor: Colors.transparent,
-                        children: [
-                          const VolumeField(),
-                          const AlcoholByVolumeField(),
+                        children: const [
+                          VolumeField(),
+                          AlcoholByVolumeField(),
                         ],
                       )
                     : const SizedBox(),
@@ -107,7 +107,7 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
                 padding: const EdgeInsetsDirectional.fromSTEB(
                     20.0, 20.0, 20.0, 10.0),
                 child: CupertinoButton.filled(
-                  child: Text('Добавить'),
+                  child: const Text('Добавить'),
                   onPressed: () {},
                 ),
               ),
@@ -151,7 +151,7 @@ class _SelectAlcoholFieldState extends State<SelectAlcoholField> {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTileWithBottom(
-      title: Text('Что пьём?'),
+      title: const Text('Что пьём?'),
       bottom: SizedBox(
         height: 160,
         child: PageView.builder(
@@ -202,7 +202,7 @@ class VolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile(
+    return const CupertinoListTile(
       title: Row(
         children: [
           Expanded(child: Text('Объем (мл.)')),
@@ -229,7 +229,7 @@ class AlcoholByVolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile(
+    return const CupertinoListTile(
       title: Row(
         children: [
           Expanded(child: Text('Крепость (%)')),
@@ -304,9 +304,9 @@ class CupertinoSliverAppBar extends SliverPersistentHeaderDelegate {
       leading: CupertinoButton(
         padding: EdgeInsets.zero,
         onPressed: () => Navigator.of(context).pop(),
-        child: Text('Отменить'),
+        child: const Text('Отменить'),
       ),
-      middle: Text('Алкоголь'),
+      middle: const Text('Алкоголь'),
     );
   }
 
