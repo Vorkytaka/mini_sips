@@ -208,30 +208,14 @@ class VolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile(
-      title: Row(
-        children: [
-          const Text('Объем (мл.)'),
-          Expanded(
-            child: TextField(
-              textAlign: TextAlign.end,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                signed: false,
-                decimal: false,
-              ),
-              onChanged: (volumeStr) {
-                final volume = int.tryParse(volumeStr);
-                if (volume != null) {
-                  context.read<DrinkedDialogCubit>().setVolume(volume);
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+    return _TextInputField(
+      title: const Text('Объем (мл.)'),
+      onChanged: (volumeStr) {
+        final volume = int.tryParse(volumeStr ?? '');
+        if (volume != null) {
+          context.read<DrinkedDialogCubit>().setVolume(volume);
+        }
+      },
     );
   }
 }
@@ -241,30 +225,14 @@ class AlcoholByVolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoListTile(
-      title: Row(
-        children: [
-          const Text('Крепость (%)'),
-          Expanded(
-            child: TextField(
-              textAlign: TextAlign.end,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                signed: false,
-                decimal: false,
-              ),
-              onChanged: (abvStr) {
-                final abv = double.tryParse(abvStr);
-                if (abv != null) {
-                  context.read<DrinkedDialogCubit>().setAlcoholByVolume(abv);
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+    return _TextInputField(
+      title: const Text('Крепость (%)'),
+      onChanged: (abvStr) {
+        final abv = double.tryParse(abvStr ?? '');
+        if (abv != null) {
+          context.read<DrinkedDialogCubit>().setAlcoholByVolume(abv);
+        }
+      },
     );
   }
 }
@@ -337,4 +305,53 @@ class CupertinoSliverAppBar extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       false;
+}
+
+class _TextInputField extends StatefulWidget {
+  final Widget title;
+  final ValueChanged<String?> onChanged;
+
+  const _TextInputField({
+    required this.title,
+    required this.onChanged,
+  });
+
+  @override
+  State<_TextInputField> createState() => _TextInputFieldState();
+}
+
+class _TextInputFieldState extends State<_TextInputField> {
+  final _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTile(
+      onTap: () => _focusNode.requestFocus(),
+      title: Row(
+        children: [
+          widget.title,
+          Flexible(
+            child: TextField(
+              focusNode: _focusNode,
+              textAlign: TextAlign.end,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+              ),
+              keyboardType: const TextInputType.numberWithOptions(
+                signed: false,
+                decimal: false,
+              ),
+              onChanged: widget.onChanged,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
