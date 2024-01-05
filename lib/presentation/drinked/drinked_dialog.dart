@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/alcohol.dart';
 import '../platform/src/platform_bottom_sheet.dart';
+import 'drinked_dialog_cubit.dart';
 
 Future<void> showDrinkedDialog({
   required BuildContext context,
@@ -15,15 +17,27 @@ Future<void> showDrinkedDialog({
       },
     );
 
-class DrinkedDialog extends StatefulWidget {
+class DrinkedDialog extends StatelessWidget {
   const DrinkedDialog({super.key});
 
   @override
-  State<DrinkedDialog> createState() => _DrinkedDialogState();
+  Widget build(BuildContext context) {
+    return BlocProvider<DrinkedDialogCubit>(
+      create: (context) => DrinkedDialogCubit(),
+      lazy: false,
+      child: const DrinkedDialogBody(),
+    );
+  }
 }
 
-class _DrinkedDialogState extends State<DrinkedDialog> {
-  Alcohol _selectedAlcohol = Alcohol.any;
+class DrinkedDialogBody extends StatefulWidget {
+  const DrinkedDialogBody({super.key});
+
+  @override
+  State<DrinkedDialogBody> createState() => _DrinkedDialogBodyState();
+}
+
+class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
   bool _showDetails = false;
 
   @override
@@ -45,13 +59,8 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
               child: CupertinoListSection.insetGrouped(
                 additionalDividerMargin: 0,
                 backgroundColor: Colors.transparent,
-                children: [
-                  SelectAlcoholField(
-                    name: _selectedAlcohol.name,
-                    onAlcoholChanged: (alco) => setState(() {
-                      _selectedAlcohol = alco;
-                    }),
-                  ),
+                children: const [
+                  SelectAlcoholField(),
                 ],
               ),
             ),
@@ -105,10 +114,14 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(
-                    20.0, 20.0, 20.0, 10.0),
+                  20.0,
+                  20.0,
+                  20.0,
+                  10.0,
+                ),
                 child: CupertinoButton.filled(
                   child: const Text('Добавить'),
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
             ),
@@ -123,14 +136,7 @@ class _DrinkedDialogState extends State<DrinkedDialog> {
 }
 
 class SelectAlcoholField extends StatefulWidget {
-  final String name;
-  final ValueChanged<Alcohol> onAlcoholChanged;
-
-  const SelectAlcoholField({
-    super.key,
-    required this.name,
-    required this.onAlcoholChanged,
-  });
+  const SelectAlcoholField({super.key});
 
   @override
   State<SelectAlcoholField> createState() => _SelectAlcoholFieldState();
@@ -158,7 +164,7 @@ class _SelectAlcoholFieldState extends State<SelectAlcoholField> {
           controller: _controller,
           onPageChanged: (i) {
             final selectedAlcohol = alcohol[i % alcohol.length];
-            widget.onAlcoholChanged(selectedAlcohol);
+            context.read<DrinkedDialogCubit>().setAlcohol(selectedAlcohol);
           },
           itemBuilder: (context, i) {
             final index = i % alcohol.length;
@@ -202,20 +208,26 @@ class VolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoListTile(
+    return CupertinoListTile(
       title: Row(
         children: [
-          Expanded(child: Text('Объем (мл.)')),
+          const Text('Объем (мл.)'),
           Expanded(
             child: TextField(
               textAlign: TextAlign.end,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
               ),
-              keyboardType: TextInputType.numberWithOptions(
+              keyboardType: const TextInputType.numberWithOptions(
                 signed: false,
                 decimal: false,
               ),
+              onChanged: (volumeStr) {
+                final volume = int.tryParse(volumeStr);
+                if (volume != null) {
+                  context.read<DrinkedDialogCubit>().setVolume(volume);
+                }
+              },
             ),
           ),
         ],
@@ -229,20 +241,26 @@ class AlcoholByVolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoListTile(
+    return CupertinoListTile(
       title: Row(
         children: [
-          Expanded(child: Text('Крепость (%)')),
+          const Text('Крепость (%)'),
           Expanded(
             child: TextField(
               textAlign: TextAlign.end,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
               ),
-              keyboardType: TextInputType.numberWithOptions(
+              keyboardType: const TextInputType.numberWithOptions(
                 signed: false,
                 decimal: false,
               ),
+              onChanged: (abvStr) {
+                final abv = double.tryParse(abvStr);
+                if (abv != null) {
+                  context.read<DrinkedDialogCubit>().setAlcoholByVolume(abv);
+                }
+              },
             ),
           ),
         ],
