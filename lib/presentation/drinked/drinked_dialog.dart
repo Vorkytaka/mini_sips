@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../domain/alcohol.dart';
 import '../platform/src/platform_bottom_sheet.dart';
 
 Future<void> showDrinkedDialog({
@@ -22,7 +23,7 @@ class DrinkedDialog extends StatefulWidget {
 }
 
 class _DrinkedDialogState extends State<DrinkedDialog> {
-  Alcohol _selectedAlcohol = alcohol.first;
+  Alcohol _selectedAlcohol = Alcohol.any;
   bool _showDetails = false;
 
   @override
@@ -292,27 +293,6 @@ class CupertinoListTileWithBottom extends StatelessWidget {
     );
   }
 }
-
-@immutable
-class Alcohol {
-  final String id;
-  final String name;
-  final IconData icon;
-
-  const Alcohol({
-    required this.id,
-    required this.name,
-    required this.icon,
-  });
-}
-
-const alcohol = [
-  Alcohol(id: 'no-matter', name: 'No matter', icon: Icons.water_drop_outlined),
-  Alcohol(id: 'beer', name: 'Beer', icon: Icons.stay_current_portrait),
-  Alcohol(id: 'wine', name: 'Wine', icon: Icons.schedule),
-  Alcohol(id: 'spirits', name: 'Spirits', icon: Icons.fastfood),
-  Alcohol(id: 'cocktails', name: 'Cocktails', icon: Icons.compass_calibration),
-];
 
 class CupertinoSliverAppBar extends SliverPersistentHeaderDelegate {
   const CupertinoSliverAppBar();
