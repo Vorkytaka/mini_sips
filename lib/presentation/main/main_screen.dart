@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../drinked/drinked_dialog.dart';
+import '../home/home_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -14,6 +15,7 @@ class MainScreen extends StatelessWidget {
         },
         child: const Icon(Icons.add),
       ),
+      body: const HomeScreen(),
     );
   }
 }
