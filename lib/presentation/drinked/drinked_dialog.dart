@@ -25,9 +25,13 @@ class DrinkedDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DrinkedDialogCubit>(
-      create: (context) => DrinkedDialogCubit(
-        dataManager: context.read<Dependencies>().dataManager,
-      ),
+      create: (context) {
+        final dependencies = context.read<Dependencies>();
+        return DrinkedDialogCubit(
+          dataManager: dependencies.dataManager,
+          locationManager: dependencies.locationManager,
+        )..init();
+      },
       lazy: false,
       child: BlocEffectListener<DrinkedDialogCubit, DrinkedDialogState,
           DrinkedDialogEffect>(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 @immutable
@@ -8,6 +9,7 @@ class Alcohol {
   final DateTime datetime;
   final String? note;
   final double? price;
+  final GeoPoint? location;
 
   const Alcohol({
     required this.id,
@@ -16,6 +18,7 @@ class Alcohol {
     required this.datetime,
     required this.note,
     required this.price,
+    required this.location,
   });
 
   Map<String, dynamic> get toJson => {
@@ -25,6 +28,7 @@ class Alcohol {
         'datetime': datetime,
         if (note != null && note!.isNotEmpty) 'note': note,
         if (price != null) 'price': price,
+        if (location != null) 'location': location,
       };
 }
 
