@@ -119,6 +119,8 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
                         children: const [
                           VolumeField(),
                           AlcoholByVolumeField(),
+                          PriceField(),
+                          NoteField(),
                         ],
                       )
                     : const SizedBox(),
@@ -263,6 +265,50 @@ class AlcoholByVolumeField extends StatelessWidget {
   }
 }
 
+class NoteField extends StatelessWidget {
+  const NoteField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cupertinoTheme = CupertinoTheme.of(context);
+    final theme = Theme.of(context);
+
+    return TextField(
+      style: cupertinoTheme.textTheme.textStyle.copyWith(inherit: true),
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: 'Заметка',
+        hintStyle: cupertinoTheme.textTheme.textStyle.copyWith(
+          color: theme.hintColor,
+        ),
+        contentPadding: const EdgeInsetsDirectional.symmetric(
+          vertical: 10,
+          horizontal: 20,
+        ),
+      ),
+      maxLines: 5,
+      onChanged: (note) => context.read<DrinkedDialogCubit>().setNote(note),
+    );
+  }
+}
+
+class PriceField extends StatelessWidget {
+  const PriceField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return _TextInputField(
+      title: const Text('Цена'),
+      onChanged: (priceStr) {
+        final price = double.tryParse(priceStr ?? '');
+        if (price != null) {
+          context.read<DrinkedDialogCubit>().setPrice(price);
+        }
+      },
+    );
+  }
+}
+
 class CupertinoListTileWithBottom extends StatelessWidget {
   final Widget title;
   final VoidCallback? onTap;
@@ -313,6 +359,7 @@ class CupertinoSliverAppBar extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return CupertinoNavigationBar(
+      transitionBetweenRoutes: false,
       leading: CupertinoButton(
         padding: EdgeInsets.zero,
         onPressed: () => Navigator.of(context).pop(),
