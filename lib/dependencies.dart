@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'manager/auth_manager.dart';
 import 'manager/data_manager.dart';
+import 'manager/location_manager.dart';
 
 abstract class Dependencies {
   FirebaseApp get firebase;
@@ -15,6 +16,8 @@ abstract class Dependencies {
   AuthManager get authManager;
 
   DataManager get dataManager;
+
+  LocationManager get locationManager;
 }
 
 class DependenciesImpl implements Dependencies {
@@ -40,4 +43,7 @@ class DependenciesImpl implements Dependencies {
     auth: firebaseAuth,
     firestore: firebaseFirestore,
   );
+
+  @override
+  late final LocationManager locationManager = const LocationManager();
 }
