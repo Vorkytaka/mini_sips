@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../common/bloc_effect.dart';
+import '../../dependencies.dart';
 import '../../domain/alcohol.dart';
 import '../platform/src/platform_bottom_sheet.dart';
 import 'drinked_dialog_cubit.dart';
@@ -23,9 +25,20 @@ class DrinkedDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DrinkedDialogCubit>(
-      create: (context) => DrinkedDialogCubit(),
+      create: (context) => DrinkedDialogCubit(
+        dataManager: context.read<Dependencies>().dataManager,
+      ),
       lazy: false,
-      child: const DrinkedDialogBody(),
+      child: BlocEffectListener<DrinkedDialogCubit, DrinkedDialogState,
+          DrinkedDialogEffect>(
+        onEffect: (context, effect) {
+          switch (effect) {
+            case DrinkedDialogEffect.success:
+              Navigator.of(context).pop();
+          }
+        },
+        child: const DrinkedDialogBody(),
+      ),
     );
   }
 }
@@ -111,18 +124,15 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
                     : const SizedBox(),
               ),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(
+                padding: EdgeInsetsDirectional.fromSTEB(
                   20.0,
                   20.0,
                   20.0,
                   10.0,
                 ),
-                child: CupertinoButton.filled(
-                  child: const Text('Добавить'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
+                child: AddButton(),
               ),
             ),
             SliverToBoxAdapter(
@@ -130,6 +140,22 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class AddButton extends StatelessWidget {
+  const AddButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<DrinkedDialogCubit, DrinkedDialogState, bool>(
+      selector: (state) => state.status == DrinkedDialogStatus.loading,
+      builder: (context, isLoading) => CupertinoButton.filled(
+        onPressed:
+            isLoading ? null : () => context.read<DrinkedDialogCubit>().add(),
+        child: const Text('Добавить'),
       ),
     );
   }
