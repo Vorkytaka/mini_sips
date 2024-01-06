@@ -41,6 +41,9 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
 
   void setPrice(double price) => emit(state.copyWith(price: price));
 
+  void setTrackLocation(bool trackLocation) =>
+      emit(state.copyWith(trackLocation: trackLocation));
+
   Future<void> add() async {
     emit(state.copyWith(status: DrinkedDialogStatus.loading));
 
@@ -51,7 +54,7 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
       datetime: DateTime.timestamp(),
       note: state.note,
       price: state.price,
-      location: state.location,
+      location: state.trackLocation ? state.location : null,
     );
 
     await dataManager.addDrink(alcohol).fold(
@@ -82,6 +85,7 @@ class DrinkedDialogState {
   final String? note;
   final double? price;
   final GeoPoint? location;
+  final bool trackLocation;
 
   const DrinkedDialogState({
     required this.status,
@@ -91,6 +95,7 @@ class DrinkedDialogState {
     required this.note,
     required this.price,
     required this.location,
+    required this.trackLocation,
   });
 
   const DrinkedDialogState.init()
@@ -100,7 +105,8 @@ class DrinkedDialogState {
         volume = null,
         note = null,
         price = null,
-        location = null;
+        location = null,
+        trackLocation = true;
 
   DrinkedDialogState copyWith({
     DrinkedDialogStatus? status,
@@ -110,6 +116,7 @@ class DrinkedDialogState {
     String? note,
     double? price,
     GeoPoint? location,
+    bool? trackLocation,
   }) =>
       DrinkedDialogState(
         status: status ?? this.status,
@@ -119,5 +126,6 @@ class DrinkedDialogState {
         note: note ?? this.note,
         price: price ?? this.price,
         location: location ?? this.location,
+        trackLocation: trackLocation ?? this.trackLocation,
       );
 }

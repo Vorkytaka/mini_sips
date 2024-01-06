@@ -124,6 +124,7 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
                           VolumeField(),
                           AlcoholByVolumeField(),
                           PriceField(),
+                          _TrackLocationField(),
                           NoteField(),
                         ],
                       )
@@ -428,6 +429,25 @@ class _TextInputFieldState extends State<_TextInputField> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TrackLocationField extends StatelessWidget {
+  const _TrackLocationField();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<DrinkedDialogCubit, DrinkedDialogState, bool>(
+      selector: (state) => state.trackLocation,
+      builder: (context, isEnabled) => CupertinoListTile(
+        title: Text('Локация'),
+        trailing: CupertinoSwitch(
+          value: isEnabled,
+          onChanged: (isEnabled) =>
+              context.read<DrinkedDialogCubit>().setTrackLocation(isEnabled),
+        ),
       ),
     );
   }
