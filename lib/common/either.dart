@@ -1,5 +1,7 @@
 import 'dart:async';
 
+typedef FEither<L, R> = Future<Either<L, R>>;
+
 /// Class that represent either [L] left or [R] right value.
 abstract class Either<L, R> {
   const Either._();

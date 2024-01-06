@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../common/either.dart';
 import '../domain/alcohol.dart';
 
 class DataManager {
@@ -12,16 +13,22 @@ class DataManager {
     required this.firestore,
   });
 
-  Future<void> addDrink(Alcohol alcohol) async {
+  FEither<Exception, void> addDrink(Alcohol alcohol) async {
     final userUid = auth.currentUser?.uid;
 
     if (userUid == null) {
-      return;
+      return Either.left(Exception('No user found'));
     }
 
-    final userDocument = firestore.collection('users').doc(userUid);
-    final userAlcoholCollection = userDocument.collection('alcohol');
+    try {
+      final userDocument = firestore.collection('users').doc(userUid);
+      final userAlcoholCollection = userDocument.collection('alcohol');
 
-    await userAlcoholCollection.add(alcohol.toJson);
+      await userAlcoholCollection.add(alcohol.toJson);
+
+      return Either.right(null);
+    } on Exception catch (e) {
+      return Either.left(e);
+    }
   }
 }
