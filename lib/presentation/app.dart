@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../dependencies.dart';
+import 'data_cubit.dart';
 import 'main/main_screen.dart';
 import 'platform/platform.dart';
 import 'welcome/welcome_screen.dart';
@@ -42,7 +44,13 @@ class App extends StatelessWidget {
         builder: (context, child) {
           return PlatformProviderHolder(
             platform: TargetPlatform.iOS,
-            child: child!,
+            child: BlocProvider<DataCubit>(
+              create: (context) => DataCubit(
+                dataManager: dependencies.dataManager,
+              )..init(),
+              lazy: false,
+              child: child!,
+            ),
           );
         },
       ),
