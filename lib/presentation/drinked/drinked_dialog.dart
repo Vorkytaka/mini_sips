@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../dependencies.dart';
 import '../../domain/alcohol.dart';
 import '../platform/src/platform_bottom_sheet.dart';
 import 'drinked_dialog_cubit.dart';
@@ -23,7 +24,9 @@ class DrinkedDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DrinkedDialogCubit>(
-      create: (context) => DrinkedDialogCubit(),
+      create: (context) => DrinkedDialogCubit(
+        dataManager: context.read<Dependencies>().dataManager,
+      ),
       lazy: false,
       child: const DrinkedDialogBody(),
     );
@@ -121,7 +124,10 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
                 ),
                 child: CupertinoButton.filled(
                   child: const Text('Добавить'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    context.read<DrinkedDialogCubit>().add();
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
             ),
