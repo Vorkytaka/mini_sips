@@ -5,17 +5,26 @@ class Alcohol {
   final String id;
   final double? alcoholByVolume;
   final int? volume;
+  final DateTime datetime;
+  final String? note;
+  final double? price;
 
   const Alcohol({
     required this.id,
     required this.alcoholByVolume,
     required this.volume,
+    required this.datetime,
+    required this.note,
+    required this.price,
   });
 
   Map<String, dynamic> get toJson => {
         'id': id,
         if (alcoholByVolume != null) 'alcohol_by_volume': alcoholByVolume,
         if (volume != null) 'volume': volume,
+        'datetime': datetime,
+        if (note != null && note!.isNotEmpty) 'note': note,
+        if (price != null) 'price': price,
       };
 }
 

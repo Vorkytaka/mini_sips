@@ -25,6 +25,10 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
 
   void setVolume(int volume) => emit(state.copyWith(volume: volume));
 
+  void setNote(String note) => emit(state.copyWith(note: note));
+
+  void setPrice(double price) => emit(state.copyWith(price: price));
+
   Future<void> add() async {
     emit(state.copyWith(status: DrinkedDialogStatus.loading));
 
@@ -32,6 +36,9 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
       id: state.alcohol.id,
       alcoholByVolume: state.alcoholByVolume,
       volume: state.volume,
+      datetime: DateTime.timestamp(),
+      note: state.note,
+      price: state.price,
     );
 
     await dataManager.addDrink(alcohol).fold(
@@ -59,30 +66,40 @@ class DrinkedDialogState {
   final AlcoholUI alcohol;
   final double? alcoholByVolume;
   final int? volume;
+  final String? note;
+  final double? price;
 
   const DrinkedDialogState({
     required this.status,
     required this.alcohol,
     required this.alcoholByVolume,
     required this.volume,
+    required this.note,
+    required this.price,
   });
 
   const DrinkedDialogState.init()
       : status = DrinkedDialogStatus.idle,
         alcohol = AlcoholUI.any,
         alcoholByVolume = null,
-        volume = null;
+        volume = null,
+        note = null,
+        price = null;
 
   DrinkedDialogState copyWith({
     DrinkedDialogStatus? status,
     AlcoholUI? alcohol,
     double? alcoholByVolume,
     int? volume,
+    String? note,
+    double? price,
   }) =>
       DrinkedDialogState(
         status: status ?? this.status,
         alcohol: alcohol ?? this.alcohol,
         alcoholByVolume: alcoholByVolume ?? this.alcoholByVolume,
         volume: volume ?? this.volume,
+        note: note ?? this.note,
+        price: price ?? this.price,
       );
 }
