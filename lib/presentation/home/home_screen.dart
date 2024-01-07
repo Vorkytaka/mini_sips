@@ -49,14 +49,14 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class NewCupertinoCard extends StatelessWidget {
+class CupertinoCard extends StatelessWidget {
   final Widget? icon;
   final Widget title;
   final Widget? trailing;
   final Widget? bottom;
   final VoidCallback? onTap;
 
-  const NewCupertinoCard({
+  const CupertinoCard({
     super.key,
     this.icon,
     required this.title,
@@ -136,79 +136,6 @@ class NewCupertinoCard extends StatelessWidget {
   }
 }
 
-class CupertinoCard extends StatelessWidget {
-  final Widget? icon;
-  final Widget title;
-  final Widget? trailing;
-  final Widget? bottomStart;
-  final Widget? bottomEnd;
-
-  const CupertinoCard({
-    super.key,
-    this.icon,
-    required this.title,
-    this.trailing,
-    this.bottomEnd,
-    this.bottomStart,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final direction = Directionality.maybeOf(context) ?? TextDirection.ltr;
-    final isLtr = direction == TextDirection.ltr;
-
-    final startWidget = isLtr ? bottomStart : bottomEnd;
-    final endWidget = isLtr ? bottomEnd : bottomStart;
-
-    final Widget? bottom;
-    if (startWidget != null || endWidget != null) {
-      bottom = Padding(
-        padding: const EdgeInsetsDirectional.only(
-          top: 4,
-          start: 20.0,
-          end: 14.0,
-          bottom: 12,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (startWidget != null) Expanded(child: startWidget),
-            if (endWidget != null) Expanded(child: endWidget),
-          ],
-        ),
-      );
-    } else {
-      bottom = null;
-    }
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CupertinoListTile(
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (icon != null) ...[
-                icon!,
-                const SizedBox(width: 6),
-              ],
-              title,
-            ],
-          ),
-          trailing: trailing,
-        ),
-        if (bottom != null) bottom,
-      ],
-    );
-  }
-}
-
 class PreviousDrinkWidget extends StatelessWidget {
   const PreviousDrinkWidget({super.key});
 
@@ -225,7 +152,7 @@ class PreviousDrinkWidget extends StatelessWidget {
         return CupertinoCard(
           icon: Icon(Icons.undo),
           title: Text('Предыдущий'),
-          bottomStart: Text(
+          bottom: Text(
               'В последний раз вы пили ${alcohol.datetime.toIso8601String()}'),
         );
       },
@@ -244,7 +171,7 @@ class MaxDrinkedPeriodWidget extends StatelessWidget {
         return CupertinoCard(
           icon: Icon(Icons.undo),
           title: Text('Дней с алкоголем'),
-          bottomStart: Text('$combo'),
+          bottom: Text('$combo'),
         );
       },
     );
@@ -259,7 +186,7 @@ class MaxNotDrinkedPeriodWidget extends StatelessWidget {
     return BlocSelector<DataCubit, DataState, int>(
       selector: (state) => state.alcohol.maxDateDifference,
       builder: (context, combo) {
-        return NewCupertinoCard(
+        return CupertinoCard(
           icon: Icon(Icons.undo),
           title: Text('Дней без алкоголя'),
           bottom: Text('$combo'),
