@@ -53,16 +53,16 @@ class NewCupertinoCard extends StatelessWidget {
   final Widget? icon;
   final Widget title;
   final Widget? trailing;
-  final Widget? bottomStart;
-  final Widget? bottomEnd;
+  final Widget? bottom;
+  final VoidCallback? onTap;
 
   const NewCupertinoCard({
     super.key,
     this.icon,
     required this.title,
     this.trailing,
-    this.bottomStart,
-    this.bottomEnd,
+    this.bottom,
+    this.onTap,
   });
 
   @override
@@ -72,7 +72,7 @@ class NewCupertinoCard extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: SizedBox(
           width: double.infinity,
           child: Padding(
@@ -85,7 +85,7 @@ class NewCupertinoCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -123,18 +123,10 @@ class NewCupertinoCard extends StatelessWidget {
                     if (trailing != null) trailing!,
                   ],
                 ),
-                if (bottomStart != null || bottomEnd != null)
+                if (bottom != null) ...[
                   const SizedBox(height: 12),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (bottomStart != null) bottomStart!,
-                    const Spacer(),
-                    if (bottomEnd != null) bottomEnd!,
-                  ],
-                ),
+                  bottom!,
+                ],
               ],
             ),
           ),
@@ -234,7 +226,7 @@ class PreviousDrinkWidget extends StatelessWidget {
           icon: Icon(Icons.undo),
           title: Text('Предыдущий'),
           bottomStart: Text(
-              'В последний раз вы пили ${alcohol!.datetime.toIso8601String()}'),
+              'В последний раз вы пили ${alcohol.datetime.toIso8601String()}'),
         );
       },
     );
@@ -270,7 +262,7 @@ class MaxNotDrinkedPeriodWidget extends StatelessWidget {
         return NewCupertinoCard(
           icon: Icon(Icons.undo),
           title: Text('Дней без алкоголя'),
-          bottomStart: Text('$combo'),
+          bottom: Text('$combo'),
         );
       },
     );
