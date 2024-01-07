@@ -442,7 +442,7 @@ class _TrackLocationField extends StatelessWidget {
     return BlocSelector<DrinkedDialogCubit, DrinkedDialogState, bool>(
       selector: (state) => state.trackLocation,
       builder: (context, isEnabled) => CupertinoListTile(
-        title: Text('Локация'),
+        title: const Text('Локация'),
         trailing: CupertinoSwitch(
           value: isEnabled,
           onChanged: (isEnabled) =>
