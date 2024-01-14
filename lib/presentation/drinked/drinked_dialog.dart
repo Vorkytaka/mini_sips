@@ -113,7 +113,7 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
                 transitionBuilder: (child, anim) => SizeTransition(
                   sizeFactor: anim,
                   axis: Axis.vertical,
-                  axisAlignment: -1.0,
+                  axisAlignment: -1,
                   child: child,
                 ),
                 child: _showDetails
@@ -134,10 +134,10 @@ class _DrinkedDialogBodyState extends State<DrinkedDialogBody> {
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(
-                  20.0,
-                  20.0,
-                  20.0,
-                  10.0,
+                  20,
+                  20,
+                  20,
+                  10,
                 ),
                 child: AddButton(),
               ),
@@ -321,8 +321,8 @@ class CupertinoListTileWithBottom extends StatelessWidget {
   final Widget? bottom;
 
   const CupertinoListTileWithBottom({
-    super.key,
     required this.title,
+    super.key,
     this.onTap,
     this.trailing,
     this.bottom,
@@ -375,10 +375,10 @@ class CupertinoSliverAppBar extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 44.0;
+  double get maxExtent => 44;
 
   @override
-  double get minExtent => 44.0;
+  double get minExtent => 44;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
@@ -410,7 +410,7 @@ class _TextInputFieldState extends State<_TextInputField> {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile(
-      onTap: () => _focusNode.requestFocus(),
+      onTap: _focusNode.requestFocus,
       title: Row(
         children: [
           widget.title,
@@ -445,8 +445,9 @@ class _TrackLocationField extends StatelessWidget {
         title: const Text('Локация'),
         trailing: CupertinoSwitch(
           value: isEnabled,
-          onChanged: (isEnabled) =>
-              context.read<DrinkedDialogCubit>().setTrackLocation(isEnabled),
+          onChanged: (isEnabled) => context
+              .read<DrinkedDialogCubit>()
+              .setTrackLocation(trackLocation: isEnabled),
         ),
       ),
     );

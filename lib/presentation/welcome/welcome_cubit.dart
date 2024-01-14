@@ -13,7 +13,7 @@ class WelcomeCubit extends Cubit<WelcomeStatus> {
   Future<void> auth() async {
     emit(WelcomeStatus.loading);
 
-    authManager.signInAnon().fold(
+    await authManager.signInAnon().fold(
       ifLeft: (e) {
         emit(WelcomeStatus.fail);
       },
