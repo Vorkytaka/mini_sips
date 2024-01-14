@@ -26,7 +26,7 @@ class LocationManager with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed) {
       _checkPermission();
     }
   }
