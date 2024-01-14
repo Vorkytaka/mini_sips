@@ -11,8 +11,8 @@ class App extends StatelessWidget {
   final Dependencies dependencies;
 
   const App({
-    super.key,
     required this.dependencies,
+    super.key,
   });
 
   @override

@@ -5,9 +5,9 @@ class PlatformProvider extends InheritedWidget {
   final TargetPlatform targetPlatform;
 
   const PlatformProvider({
-    super.key,
     required this.targetPlatform,
     required super.child,
+    super.key,
   });
 
   @override

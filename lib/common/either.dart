@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 typedef FEither<L, R> = Future<Either<L, R>>;
 
 /// Class that represent either [L] left or [R] right value.
+@immutable
 abstract class Either<L, R> {
   const Either._();
 
@@ -20,6 +23,7 @@ abstract class Either<L, R> {
   Either<L, T> map<T>(T Function(R value) f);
 }
 
+@immutable
 class Left<L, R> extends Either<L, R> {
   const Left(this.value) : super._();
 
@@ -53,6 +57,7 @@ class Left<L, R> extends Either<L, R> {
   int get hashCode => value.hashCode;
 }
 
+@immutable
 class Right<L, R> extends Either<L, R> {
   const Right(this.value) : super._();
 

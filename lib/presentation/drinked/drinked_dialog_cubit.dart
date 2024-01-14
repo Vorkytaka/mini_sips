@@ -23,7 +23,7 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
   }) : super(const DrinkedDialogState.init());
 
   Future<void> init() async {
-    locationManager.getLocation().then((location) {
+    await locationManager.getLocation().then((location) {
       if (location != null) {
         emit(state.copyWith(location: location));
       }
@@ -41,7 +41,7 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
 
   void setPrice(double price) => emit(state.copyWith(price: price));
 
-  void setTrackLocation(bool trackLocation) =>
+  void setTrackLocation({required bool trackLocation}) =>
       emit(state.copyWith(trackLocation: trackLocation));
 
   Future<void> add() async {

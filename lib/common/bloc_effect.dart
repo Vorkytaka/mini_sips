@@ -58,9 +58,9 @@ class BlocEffectListener<B extends BlocEffectStream<S, E>, S, E>
   final void Function(BuildContext context, E effect) onEffect;
 
   const BlocEffectListener({
-    Key? key,
     required this.child,
     required this.onEffect,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -112,7 +112,7 @@ class _BlocEffectListenerState<B extends BlocEffectStream<S, E>, S, E>
   }
 
   void _subscribe() {
-    _subscription = _bloc?.addEffectListener((E effect) {
+    _subscription = _bloc?.addEffectListener((effect) {
       widget.onEffect(context, effect);
     });
   }
