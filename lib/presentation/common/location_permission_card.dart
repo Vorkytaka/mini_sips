@@ -1,16 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:provider/provider.dart';
 
 import '../../dependencies.dart';
 import 'cupertino_card.dart';
 
-class LocationPermissionCard extends StatelessWidget {
+// TODO(Vorkytaka): Move it to the state manager
+const String _shouldHideKey = 'hide_location_permission_card';
+
+class LocationPermissionCard extends StatefulWidget {
   const LocationPermissionCard({super.key});
 
   @override
+  State<LocationPermissionCard> createState() => _LocationPermissionCardState();
+}
+
+class _LocationPermissionCardState extends State<LocationPermissionCard> {
+  bool _shouldHide = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final sharedPreferences = context.read<Dependencies>().sharedPreferences;
+    _shouldHide = sharedPreferences.getBool(_shouldHideKey) ?? false;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_shouldHide) {
+      return const SizedBox();
+    }
+
     return StreamBuilder<LocationPermission>(
       stream: context.read<Dependencies>().locationManager.permissionStream,
       builder: (context, snapshot) {
@@ -40,7 +61,14 @@ class LocationPermissionCard extends StatelessWidget {
             CupertinoCard(
               title: const Text('Улучшить данные'),
               trailing: GestureDetector(
-                onTap: () {},
+                onTap: () async {
+                  final sharedPreferences =
+                      context.read<Dependencies>().sharedPreferences;
+                  await sharedPreferences.setBool(_shouldHideKey, true);
+                  setState(() {
+                    _shouldHide = true;
+                  });
+                },
                 child: const SizedBox.square(
                   dimension: 44,
                   child: Icon(Icons.close),
