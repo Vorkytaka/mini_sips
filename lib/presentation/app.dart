@@ -21,6 +21,9 @@ class App extends StatelessWidget {
       value: dependencies,
       updateShouldNotify: (_, __) => false,
       child: MaterialApp(
+        theme: ThemeData(
+          scaffoldBackgroundColor: const Color(0xfff2f1f6),
+        ),
         initialRoute: dependencies.authManager.isAuth ? '/main' : '/welcome',
         onGenerateRoute: (settings) {
           final Widget? page = switch (settings.name) {
