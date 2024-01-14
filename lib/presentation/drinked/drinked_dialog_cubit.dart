@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../common/bloc_effect.dart';
 import '../../common/either.dart';
@@ -17,17 +20,33 @@ class DrinkedDialogCubit extends Cubit<DrinkedDialogState>
   final DataManager dataManager;
   final LocationManager locationManager;
 
+  StreamSubscription? _permissionSubscription;
+
   DrinkedDialogCubit({
     required this.dataManager,
     required this.locationManager,
   }) : super(const DrinkedDialogState.init());
 
   Future<void> init() async {
+    _permissionSubscription = locationManager.permissionStream
+        .map((permission) =>
+            permission != LocationPermission.denied &&
+            permission != LocationPermission.deniedForever)
+        .listen((isGranted) {
+      emit(state.copyWith(isLocationPermissionGranted: isGranted));
+    });
+
     await locationManager.getLocation().then((location) {
       if (location != null) {
         emit(state.copyWith(location: location));
       }
     });
+  }
+
+  @override
+  Future<void> close() async {
+    await _permissionSubscription?.cancel();
+    return super.close();
   }
 
   void setAlcohol(AlcoholUI alcohol) => emit(state.copyWith(alcohol: alcohol));
@@ -87,6 +106,8 @@ class DrinkedDialogState {
   final GeoPoint? location;
   final bool trackLocation;
 
+  final bool isLocationPermissionGranted;
+
   const DrinkedDialogState({
     required this.status,
     required this.alcohol,
@@ -96,6 +117,7 @@ class DrinkedDialogState {
     required this.price,
     required this.location,
     required this.trackLocation,
+    required this.isLocationPermissionGranted,
   });
 
   const DrinkedDialogState.init()
@@ -106,7 +128,8 @@ class DrinkedDialogState {
         note = null,
         price = null,
         location = null,
-        trackLocation = true;
+        trackLocation = true,
+        isLocationPermissionGranted = true;
 
   DrinkedDialogState copyWith({
     DrinkedDialogStatus? status,
@@ -117,6 +140,7 @@ class DrinkedDialogState {
     double? price,
     GeoPoint? location,
     bool? trackLocation,
+    bool? isLocationPermissionGranted,
   }) =>
       DrinkedDialogState(
         status: status ?? this.status,
@@ -127,5 +151,7 @@ class DrinkedDialogState {
         price: price ?? this.price,
         location: location ?? this.location,
         trackLocation: trackLocation ?? this.trackLocation,
+        isLocationPermissionGranted:
+            isLocationPermissionGranted ?? this.isLocationPermissionGranted,
       );
 }

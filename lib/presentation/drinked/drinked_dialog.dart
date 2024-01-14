@@ -439,17 +439,40 @@ class _TrackLocationField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<DrinkedDialogCubit, DrinkedDialogState, bool>(
-      selector: (state) => state.trackLocation,
-      builder: (context, isEnabled) => CupertinoListTile(
-        title: const Text('Локация'),
-        trailing: CupertinoSwitch(
-          value: isEnabled,
-          onChanged: (isEnabled) => context
-              .read<DrinkedDialogCubit>()
-              .setTrackLocation(trackLocation: isEnabled),
-        ),
-      ),
+    return BlocBuilder<DrinkedDialogCubit, DrinkedDialogState>(
+      builder: (context, state) {
+        final isPermissionGranted = state.isLocationPermissionGranted;
+
+        final Widget trailing;
+        final Widget? subtitle;
+        if (isPermissionGranted) {
+          trailing = CupertinoSwitch(
+            value: state.trackLocation,
+            onChanged: (isEnabled) => context
+                .read<DrinkedDialogCubit>()
+                .setTrackLocation(trackLocation: isEnabled),
+          );
+          subtitle = null;
+        } else {
+          trailing = CupertinoButton(
+            child: const Text('Разрешить'),
+            onPressed: () => context
+                .read<Dependencies>()
+                .locationManager
+                .requestPermission(),
+          );
+          subtitle = const Text(
+            'Разрешить нам получить локацию',
+            maxLines: 2,
+          );
+        }
+
+        return CupertinoListTile(
+          title: const Text('Локация'),
+          subtitle: subtitle,
+          trailing: trailing,
+        );
+      },
     );
   }
 }
