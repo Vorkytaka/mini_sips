@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocationManager {
+class LocationManager with WidgetsBindingObserver {
   static const String deniedForeverKey = 'denied_forever';
 
   final SharedPreferences sharedPreferences;
@@ -23,15 +24,16 @@ class LocationManager {
 
   Stream<LocationPermission> get permissionStream => _permissionSubject.stream;
 
-  Future<void> init() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    final deniedForever = _isDeniedForever;
-
-    if (permission == LocationPermission.denied && deniedForever) {
-      permission = LocationPermission.deniedForever;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.resumed) {
+      _checkPermission();
     }
+  }
 
-    _permissionSubject.add(permission);
+  Future<void> init() async {
+    WidgetsBinding.instance.addObserver(this);
+    await _checkPermission();
   }
 
   Future<void> requestPermission() async {
@@ -68,4 +70,15 @@ class LocationManager {
 
   bool get _isDeniedForever =>
       sharedPreferences.getBool(deniedForeverKey) ?? false;
+
+  Future<void> _checkPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    final deniedForever = _isDeniedForever;
+
+    if (permission == LocationPermission.denied && deniedForever) {
+      permission = LocationPermission.deniedForever;
+    }
+
+    _permissionSubject.add(permission);
+  }
 }
