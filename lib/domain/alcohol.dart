@@ -36,26 +36,29 @@ class Alcohol {
 class AlcoholUI {
   final String id;
   final String name;
-  final IconData icon;
+  final String iconPath;
 
   const AlcoholUI({
     required this.id,
     required this.name,
-    required this.icon,
+    required this.iconPath,
   });
 
   static const AlcoholUI any = AlcoholUI(
     id: 'any',
     name: 'Any alcohol',
-    icon: Icons.water_drop_outlined,
+    iconPath: 'assets/icons/beer.svg',
   );
 }
 
 const alcohol = [
   AlcoholUI.any,
-  AlcoholUI(id: 'beer', name: 'Beer', icon: Icons.stay_current_portrait),
-  AlcoholUI(id: 'wine', name: 'Wine', icon: Icons.schedule),
-  AlcoholUI(id: 'spirits', name: 'Spirits', icon: Icons.fastfood),
+  AlcoholUI(id: 'beer', name: 'Beer', iconPath: 'assets/icons/beer.svg'),
+  AlcoholUI(id: 'wine', name: 'Wine', iconPath: 'assets/icons/wine.svg'),
   AlcoholUI(
-      id: 'cocktails', name: 'Cocktails', icon: Icons.compass_calibration),
+      id: 'spirits', name: 'Spirits', iconPath: 'assets/icons/spirits.svg'),
+  AlcoholUI(
+      id: 'cocktails',
+      name: 'Cocktails',
+      iconPath: 'assets/icons/cocktails.svg'),
 ];

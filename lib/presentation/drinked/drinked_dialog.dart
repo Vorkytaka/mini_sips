@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../common/bloc_effect.dart';
 import '../../dependencies.dart';
@@ -220,9 +221,10 @@ class _SelectAlcoholFieldState extends State<SelectAlcoholField> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(
-                    alco.icon,
-                    size: 64,
+                  SvgPicture.asset(
+                    alco.iconPath,
+                    width: 64,
+                    height: 64,
                   ),
                   const SizedBox(height: 12),
                   Text(alco.name),
