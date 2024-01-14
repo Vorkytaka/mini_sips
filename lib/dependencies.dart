@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'manager/auth_manager.dart';
 import 'manager/data_manager.dart';
@@ -18,14 +19,24 @@ abstract class Dependencies {
   DataManager get dataManager;
 
   LocationManager get locationManager;
+
+  SharedPreferences get sharedPreferences;
 }
 
 class DependenciesImpl implements Dependencies {
   @override
   final FirebaseApp firebase;
 
+  @override
+  final LocationManager locationManager;
+
+  @override
+  final SharedPreferences sharedPreferences;
+
   DependenciesImpl({
     required this.firebase,
+    required this.locationManager,
+    required this.sharedPreferences,
   });
 
   @override
@@ -43,7 +54,4 @@ class DependenciesImpl implements Dependencies {
     auth: firebaseAuth,
     firestore: firebaseFirestore,
   );
-
-  @override
-  late final LocationManager locationManager = const LocationManager();
 }

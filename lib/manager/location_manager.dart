@@ -1,15 +1,54 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationManager {
-  const LocationManager();
+  static const String deniedForeverKey = 'denied_forever';
+
+  final SharedPreferences sharedPreferences;
+
+  // ignore: close_sinks
+  final _permissionSubject = BehaviorSubject<LocationPermission>();
+
+  LocationManager({
+    required this.sharedPreferences,
+  });
 
   Future<bool> get isEnabled => Geolocator.isLocationServiceEnabled();
 
-  Future<LocationPermission> get permission => Geolocator.checkPermission();
+  LocationPermission get permission => _permissionSubject.value;
 
-  Future<LocationPermission> requestPermission() =>
-      Geolocator.requestPermission();
+  Stream<LocationPermission> get permissionStream => _permissionSubject.stream;
+
+  Future<void> init() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    final deniedForever = _isDeniedForever;
+
+    if (permission == LocationPermission.denied && deniedForever) {
+      permission = LocationPermission.deniedForever;
+    }
+
+    _permissionSubject.add(permission);
+  }
+
+  Future<void> requestPermission() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    final deniedForever = _isDeniedForever;
+
+    if (permission == LocationPermission.deniedForever && !deniedForever) {
+      await sharedPreferences.setBool(deniedForeverKey, true);
+      permission = LocationPermission.deniedForever;
+    }
+
+    _permissionSubject.add(permission);
+
+    if (deniedForever) {
+      await Geolocator.openAppSettings();
+    }
+  }
 
   Future<GeoPoint?> getLocation() async {
     final isEnabled = await Geolocator.isLocationServiceEnabled();
@@ -26,4 +65,7 @@ class LocationManager {
     return Geolocator.getCurrentPosition()
         .then((position) => GeoPoint(position.latitude, position.longitude));
   }
+
+  bool get _isDeniedForever =>
+      sharedPreferences.getBool(deniedForeverKey) ?? false;
 }
