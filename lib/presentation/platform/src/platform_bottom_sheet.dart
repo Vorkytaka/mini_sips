@@ -12,17 +12,23 @@ Future<T?> showPlatformBottomSheet<T>({
   final platform = PlatformProvider.of(context);
 
   if (platform.isCupertino) {
+    // Override builder with specific scroll
+    Widget newBuilder(context) => ScrollConfiguration(
+          behavior: const _CupertinoDialogOverride(),
+          child: builder(context),
+        );
+
     final cupertinoScaffold = CupertinoScaffold.of(context);
     if (cupertinoScaffold != null) {
       return CupertinoScaffold.showCupertinoModalBottomSheet(
         context: context,
-        builder: builder,
+        builder: newBuilder,
         expand: expand,
       );
     } else {
       return showCupertinoModalBottomSheet(
         context: context,
-        builder: builder,
+        builder: newBuilder,
         expand: expand,
       );
     }
@@ -33,4 +39,12 @@ Future<T?> showPlatformBottomSheet<T>({
       expand: expand,
     );
   }
+}
+
+class _CupertinoDialogOverride extends ScrollBehavior {
+  const _CupertinoDialogOverride();
+
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) =>
+      const ClampingScrollPhysics();
 }
