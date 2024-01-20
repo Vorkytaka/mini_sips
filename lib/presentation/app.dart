@@ -25,37 +25,52 @@ class App extends StatelessWidget {
       child: UiDependenciesWidget(
         dependencies: dependencies,
         navigatorKey: navigatorKey,
-        child: MaterialApp(
+        child: _App(
+          dependencies: dependencies,
           navigatorKey: navigatorKey,
-          theme: ThemeData(
-            scaffoldBackgroundColor: const Color(0xfff2f1f6),
-          ),
-          initialRoute: dependencies.authManager.isAuth ? '/main' : '/welcome',
-          onGenerateRoute: (settings) {
-            final Widget? page = switch (settings.name) {
-              '/welcome' => const WelcomeScreen(),
-              '/main' => const MainScreen(),
-              _ => null,
-            };
-
-            if (page == null) {
-              return null;
-            }
-
-            return MaterialPageRoute(
-              builder: (context) => CupertinoScaffold(
-                body: page,
-              ),
-            );
-          },
-          builder: (context, child) {
-            return PlatformProviderHolder(
-              platform: TargetPlatform.iOS,
-              child: child!,
-            );
-          },
         ),
       ),
+    );
+  }
+}
+
+class _App extends StatelessWidget {
+  final Dependencies dependencies;
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const _App({
+    required this.dependencies,
+    required this.navigatorKey,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final platform = PlatformProvider.of(context);
+
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xfff2f1f6),
+        platform: platform,
+      ),
+      initialRoute: dependencies.authManager.isAuth ? '/main' : '/welcome',
+      onGenerateRoute: (settings) {
+        final Widget? page = switch (settings.name) {
+          '/welcome' => const WelcomeScreen(),
+          '/main' => const MainScreen(),
+          _ => null,
+        };
+
+        if (page == null) {
+          return null;
+        }
+
+        return MaterialPageRoute(
+          builder: (context) => CupertinoScaffold(
+            body: page,
+          ),
+        );
+      },
     );
   }
 }
