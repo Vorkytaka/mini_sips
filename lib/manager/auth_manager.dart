@@ -5,6 +5,8 @@ import '../common/either.dart';
 import '../domain/user_data.dart';
 
 class AuthManager {
+  static const String _appStyleKey = 'app_style';
+
   final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firestore;
 
@@ -27,7 +29,7 @@ class AuthManager {
 
     final userCollection = firestore.collection('users').doc(userUid);
     final userDoc = await userCollection.get();
-    return userDoc.data()?['app_style'] != null;
+    return userDoc.data()?[_appStyleKey] != null;
   }
 
   Future<Either<Exception, void>> signInAnon() async {
@@ -49,7 +51,7 @@ class AuthManager {
     try {
       final userCollection = firestore.collection('users').doc(userUid);
       await userCollection.set({
-        'app_style': appStyle.name,
+        _appStyleKey: appStyle.name,
       });
       return Either.right(null);
     } on Exception catch (e) {
