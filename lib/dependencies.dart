@@ -47,7 +47,10 @@ class DependenciesImpl implements Dependencies {
       FirebaseFirestore.instanceFor(app: firebase);
 
   @override
-  late final AuthManager authManager = AuthManager(firebaseAuth: firebaseAuth);
+  late final AuthManager authManager = AuthManager(
+    firebaseAuth: firebaseAuth,
+    firestore: firebaseFirestore,
+  );
 
   @override
   late final DataManager dataManager = DataManager(
