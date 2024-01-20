@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 enum AppStyle {
   tracking,
-  quiting,
+  quitting,
 }
 
 @immutable
