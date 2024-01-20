@@ -54,8 +54,8 @@ class _BodyState extends State<_Body> {
             ),
             const SizedBox(height: 12),
             CupertinoButton.filled(
-              child: const Text('Принять'),
               onPressed: _appStyle == null ? null : _onSubmit,
+              child: const Text('Принять'),
             ),
           ],
         ),
