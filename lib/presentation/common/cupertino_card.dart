@@ -24,7 +24,9 @@ class CupertinoCard extends StatelessWidget {
     final cupertinoTheme = CupertinoTheme.of(context);
 
     return Material(
-      type: backgroundColor == null ? MaterialType.transparency : MaterialType.canvas,
+      type: backgroundColor == null
+          ? MaterialType.transparency
+          : MaterialType.canvas,
       color: backgroundColor,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       child: InkWell(
