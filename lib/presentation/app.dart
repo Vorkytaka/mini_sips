@@ -4,8 +4,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../dependencies.dart';
+import 'check_app_style.dart';
 import 'main/main_screen.dart';
 import 'platform/platform.dart';
+import 'select_app_style.dart';
 import 'ui_dependencies.dart';
 import 'welcome/welcome_screen.dart';
 
@@ -54,11 +56,14 @@ class _App extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xfff2f1f6),
         platform: platform,
       ),
-      initialRoute: dependencies.authManager.isAuth ? '/main' : '/welcome',
+      initialRoute:
+          dependencies.authManager.isAuth ? '/check_app_style' : '/welcome',
       onGenerateRoute: (settings) {
         final Widget? page = switch (settings.name) {
           '/welcome' => const WelcomeScreen(),
           '/main' => const MainScreen(),
+          '/check_app_style' => const CheckAppStyleScreen(),
+          '/select_app_style' => const SelectAppStyleScreen(),
           _ => null,
         };
 

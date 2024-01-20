@@ -7,6 +7,7 @@ class CupertinoCard extends StatelessWidget {
   final Widget? trailing;
   final Widget? bottom;
   final VoidCallback? onTap;
+  final Color? backgroundColor;
 
   const CupertinoCard({
     required this.title,
@@ -15,6 +16,7 @@ class CupertinoCard extends StatelessWidget {
     this.trailing,
     this.bottom,
     this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -22,9 +24,14 @@ class CupertinoCard extends StatelessWidget {
     final cupertinoTheme = CupertinoTheme.of(context);
 
     return Material(
-      type: MaterialType.transparency,
+      type: backgroundColor == null
+          ? MaterialType.transparency
+          : MaterialType.canvas,
+      color: backgroundColor,
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
       child: InkWell(
         onTap: onTap,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
         child: SizedBox(
           width: double.infinity,
           child: Padding(

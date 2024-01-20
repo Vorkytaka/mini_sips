@@ -17,7 +17,7 @@ class WelcomeScreen extends StatelessWidget {
       child: BlocListener<WelcomeCubit, WelcomeStatus>(
         listener: (context, status) {
           if (status == WelcomeStatus.success) {
-            Navigator.of(context).pushReplacementNamed('/main');
+            Navigator.of(context).pushReplacementNamed('/check_app_style');
           }
         },
         child: const _Content(),
