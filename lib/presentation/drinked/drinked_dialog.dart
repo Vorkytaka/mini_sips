@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' hide CupertinoTextField;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../common/bloc_effect.dart';
 import '../../dependencies.dart';
 import '../../domain/alcohol.dart';
+import '../common/cupertino_text_field.dart';
 import '../platform/src/platform_bottom_sheet.dart';
 import 'drinked_dialog_cubit.dart';
 
@@ -243,7 +244,7 @@ class VolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _TextInputField(
+    return CupertinoTextField(
       title: const Text('Объем (мл.)'),
       onChanged: (volumeStr) {
         final volume = int.tryParse(volumeStr ?? '');
@@ -260,7 +261,7 @@ class AlcoholByVolumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _TextInputField(
+    return CupertinoTextField(
       title: const Text('Крепость (%)'),
       onChanged: (abvStr) {
         final abv = double.tryParse(abvStr ?? '');
@@ -304,7 +305,7 @@ class PriceField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _TextInputField(
+    return CupertinoTextField(
       title: const Text('Цена'),
       onChanged: (priceStr) {
         final price = double.tryParse(priceStr ?? '');
@@ -385,55 +386,6 @@ class CupertinoSliverAppBar extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       false;
-}
-
-class _TextInputField extends StatefulWidget {
-  final Widget title;
-  final ValueChanged<String?> onChanged;
-
-  const _TextInputField({
-    required this.title,
-    required this.onChanged,
-  });
-
-  @override
-  State<_TextInputField> createState() => _TextInputFieldState();
-}
-
-class _TextInputFieldState extends State<_TextInputField> {
-  final _focusNode = FocusNode();
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoListTile(
-      onTap: _focusNode.requestFocus,
-      title: Row(
-        children: [
-          widget.title,
-          Flexible(
-            child: TextField(
-              focusNode: _focusNode,
-              textAlign: TextAlign.end,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                signed: false,
-                decimal: false,
-              ),
-              onChanged: widget.onChanged,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _TrackLocationField extends StatelessWidget {
