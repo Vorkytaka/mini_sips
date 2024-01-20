@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../dependencies.dart';
 import '../manager/auth_guard_manager.dart';
+import 'platform/platform.dart';
 
 abstract class UiDependency {
   Future<void> init();
@@ -82,7 +83,10 @@ class _UiDependenciesWidgetState extends State<UiDependenciesWidget> {
   Widget build(BuildContext context) {
     return RepositoryProvider<UiDependencies>.value(
       value: uiDependencies,
-      child: widget.child,
+      child: PlatformProviderHolder(
+        platform: TargetPlatform.iOS,
+        child: widget.child,
+      ),
     );
   }
 }
