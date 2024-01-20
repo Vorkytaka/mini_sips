@@ -17,10 +17,12 @@ class CupertinoTextField extends StatefulWidget {
 
 class _TextInputFieldState extends State<CupertinoTextField> {
   final _focusNode = FocusNode();
+  final _controller = TextEditingController();
 
   @override
   void dispose() {
     _focusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -33,6 +35,7 @@ class _TextInputFieldState extends State<CupertinoTextField> {
           widget.title,
           Flexible(
             child: TextField(
+              controller: _controller,
               focusNode: _focusNode,
               textAlign: TextAlign.end,
               decoration: const InputDecoration(
