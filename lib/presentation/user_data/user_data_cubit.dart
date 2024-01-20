@@ -1,11 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../common/bloc_effect.dart';
 import '../../common/either.dart';
 import '../../domain/user_data.dart';
 import '../../manager/auth_manager.dart';
 
-class UserDataScreenCubit extends Cubit<UserDataScreenState> {
+enum UserDataScreenEffect {
+  success,
+}
+
+class UserDataScreenCubit extends Cubit<UserDataScreenState>
+    with BlocEffectStream<UserDataScreenState, UserDataScreenEffect> {
   final AuthManager authManager;
 
   UserDataScreenCubit({
@@ -59,7 +65,9 @@ class UserDataScreenCubit extends Cubit<UserDataScreenState> {
         )
         .fold(
           ifLeft: (e) {},
-          ifRight: (_) {},
+          ifRight: (_) {
+            sendEffect(UserDataScreenEffect.success);
+          },
         );
   }
 }

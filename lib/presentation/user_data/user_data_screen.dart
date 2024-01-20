@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
+import '../../common/bloc_effect.dart';
 import '../../dependencies.dart';
 import '../../domain/user_data.dart';
 import '../common/cupertino_text_field.dart';
@@ -18,7 +19,16 @@ class UserDataScreen extends StatelessWidget {
         final dependencies = context.read<Dependencies>();
         return UserDataScreenCubit(authManager: dependencies.authManager);
       },
-      child: const _Screen(),
+      child: BlocEffectListener<UserDataScreenCubit, UserDataScreenState,
+          UserDataScreenEffect>(
+        onEffect: (context, effect) {
+          switch (effect) {
+            case UserDataScreenEffect.success:
+              Navigator.of(context).pop();
+          }
+        },
+        child: const _Screen(),
+      ),
     );
   }
 }
