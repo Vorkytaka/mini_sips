@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -67,10 +68,33 @@ class _App extends StatelessWidget {
 
         return MaterialPageRoute(
           builder: (context) => CupertinoScaffold(
-            body: page,
+            body: _MaterialToCupertinoWrapper(
+              child: page,
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+/// Just wrapper to fix [CupertinoScaffold].
+///
+/// See https://github.com/Vorkytaka/mini_sips/issues/63
+class _MaterialToCupertinoWrapper extends StatelessWidget {
+  final Widget child;
+
+  const _MaterialToCupertinoWrapper({
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return CupertinoTheme(
+      data: MaterialBasedCupertinoThemeData(materialTheme: theme),
+      child: child,
     );
   }
 }
