@@ -5,6 +5,12 @@ enum AppStyle {
   quitting,
 }
 
+enum BiologicalSex {
+  male,
+  female,
+  notDefine,
+}
+
 @immutable
 class UserData {
   final AppStyle appStyle;

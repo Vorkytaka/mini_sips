@@ -58,4 +58,30 @@ class AuthManager {
       return Either.left(e);
     }
   }
+
+  FEither<Exception, void> setUserData({
+    required double? weight,
+    required double? height,
+    required int? age,
+    required BiologicalSex sex,
+  }) async {
+    final userUid = firebaseAuth.currentUser?.uid;
+
+    if (userUid == null) {
+      return Either.left(Exception('User not found'));
+    }
+
+    try {
+      final userCollection = firestore.collection('users').doc(userUid);
+      await userCollection.set({
+        'weight': weight,
+        'height': height,
+        'age': age,
+        'sex': sex.name,
+      });
+      return Either.right(null);
+    } on Exception catch (e) {
+      return Either.left(e);
+    }
+  }
 }

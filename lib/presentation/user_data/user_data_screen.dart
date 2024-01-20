@@ -1,19 +1,43 @@
 import 'package:flutter/cupertino.dart' hide CupertinoTextField;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_down_button/pull_down_button.dart';
 
+import '../../dependencies.dart';
+import '../../domain/user_data.dart';
 import '../common/cupertino_text_field.dart';
+import 'user_data_cubit.dart';
 
 class UserDataScreen extends StatelessWidget {
   const UserDataScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    return BlocProvider(
+      create: (context) {
+        final dependencies = context.read<Dependencies>();
+        return UserDataScreenCubit(authManager: dependencies.authManager);
+      },
+      child: const _Screen(),
+    );
+  }
+}
+
+class _Screen extends StatelessWidget {
+  const _Screen();
+
+  @override
+  Widget build(BuildContext context) {
+    final cupertinoTheme = CupertinoTheme.of(context);
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
         middle: Text('Данные пользователя'),
+        trailing: CupertinoButton(
+          onPressed: () => context.read<UserDataScreenCubit>().submit(),
+          padding: EdgeInsets.zero,
+          child: Text('Сохранить'),
+        ),
       ),
       body: ListView(
         physics: const ScrollPhysics(),
@@ -24,8 +48,11 @@ class UserDataScreen extends StatelessWidget {
             footer: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: DefaultTextStyle(
-                style: theme.textTheme.titleSmall!.copyWith(
-                  color: theme.hintColor,
+                style: cupertinoTheme.textTheme.textStyle.merge(
+                  TextStyle(
+                    fontSize: 12,
+                    color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                  ),
                 ),
                 child: Text(
                     'Ваши данные не обязательны, но помогают нам персонализировать ваш опыт использования. Ваша информация остается конфиденциальной.'),
@@ -34,32 +61,37 @@ class UserDataScreen extends StatelessWidget {
             children: [
               CupertinoTextField(
                 title: Text('Вес'),
-                onChanged: (str) {},
+                onChanged: (str) =>
+                    context.read<UserDataScreenCubit>().updateWeight(str),
               ),
               CupertinoTextField(
                 title: Text('Рост'),
-                onChanged: (str) {},
+                onChanged: (str) =>
+                    context.read<UserDataScreenCubit>().updateHeight(str),
               ),
               CupertinoTextField(
                 title: Text('Возраст'),
-                onChanged: (str) {},
+                onChanged: (str) =>
+                    context.read<UserDataScreenCubit>().updateAge(str),
               ),
               CupertinoListTile(
                 title: Text('Пол'),
                 trailing: PullDownButton(
                   itemBuilder: (context) => [
-                    PullDownMenuItem(
-                      onTap: () {},
-                      title: 'Мужичара',
-                    ),
-                    PullDownMenuItem(
-                      onTap: () {},
-                      title: 'Девчуля',
-                    ),
+                    for (final sex in BiologicalSex.values)
+                      PullDownMenuItem(
+                        onTap: () =>
+                            context.read<UserDataScreenCubit>().updateSex(sex),
+                        title: sex.name,
+                      ),
                   ],
-                  buttonBuilder: (context, showMenu) => CupertinoButton(
-                    onPressed: showMenu,
-                    child: const Text('Мужичара'),
+                  buttonBuilder: (context, showMenu) => BlocSelector<
+                      UserDataScreenCubit, UserDataScreenState, BiologicalSex>(
+                    selector: (state) => state.sex,
+                    builder: (context, sex) => CupertinoButton(
+                      onPressed: showMenu,
+                      child: Text(sex.name),
+                    ),
                   ),
                 ),
               ),
