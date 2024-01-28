@@ -42,11 +42,11 @@ class _Screen extends StatelessWidget {
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        middle: Text('Данные пользователя'),
+        middle: const Text('Данные пользователя'),
         trailing: CupertinoButton(
           onPressed: () => context.read<UserDataScreenCubit>().submit(),
           padding: EdgeInsets.zero,
-          child: Text('Сохранить'),
+          child: const Text('Сохранить'),
         ),
       ),
       body: ListView(
@@ -64,28 +64,28 @@ class _Screen extends StatelessWidget {
                     color: CupertinoColors.secondaryLabel.resolveFrom(context),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                     'Ваши данные не обязательны, но помогают нам персонализировать ваш опыт использования. Ваша информация остается конфиденциальной.'),
               ),
             ),
             children: [
               CupertinoTextField(
-                title: Text('Вес'),
+                title: const Text('Вес'),
                 onChanged: (str) =>
                     context.read<UserDataScreenCubit>().updateWeight(str),
               ),
               CupertinoTextField(
-                title: Text('Рост'),
+                title: const Text('Рост'),
                 onChanged: (str) =>
                     context.read<UserDataScreenCubit>().updateHeight(str),
               ),
               CupertinoTextField(
-                title: Text('Возраст'),
+                title: const Text('Возраст'),
                 onChanged: (str) =>
                     context.read<UserDataScreenCubit>().updateAge(str),
               ),
               CupertinoListTile(
-                title: Text('Пол'),
+                title: const Text('Пол'),
                 trailing: PullDownButton(
                   itemBuilder: (context) => [
                     for (final sex in BiologicalSex.values)
