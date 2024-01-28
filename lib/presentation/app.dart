@@ -9,6 +9,7 @@ import 'main/main_screen.dart';
 import 'platform/platform.dart';
 import 'select_app_style.dart';
 import 'ui_dependencies.dart';
+import 'user_data/user_data_screen.dart';
 import 'welcome/welcome_screen.dart';
 
 class App extends StatelessWidget {
@@ -64,6 +65,7 @@ class _App extends StatelessWidget {
           '/main' => const MainScreen(),
           '/check_app_style' => const CheckAppStyleScreen(),
           '/select_app_style' => const SelectAppStyleScreen(),
+          '/user_data' => const UserDataScreen(),
           _ => null,
         };
 
